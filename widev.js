@@ -572,3 +572,24 @@ export const fechaLetra = (fecha, formato) => {
   for (const [ms, unit] of unidades) { const cant = Math.floor(dif / ms); if (cant > 0) return new Date(fecha) < new Date() ? `Hace ${cant}${unit}` : `En ${cant}${unit}`; }
   return 'Ahora mismo';
 };
+
+export function wiUsuario(user = undefined, prop = undefined) {
+  if (user === undefined) {
+    // Solo obtener
+    const usuario = getls('usuarioAuth');
+    if (prop && usuario) {
+      return usuario[prop] || null;
+    }
+    return usuario;
+  } else if (user === null) {
+    // Limpiar
+    removels('usuarioAuth');
+  } else if (typeof user === 'string') {
+    // Si se pasa string como primer parámetro, es una propiedad
+    const usuario = getls('usuarioAuth');
+    return usuario?.[user] || null;
+  } else {
+    // Guardar usuario
+    savels('usuarioAuth', user);
+  }
+}
