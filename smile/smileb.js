@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { db } from '../firebase/init.js';
 import { collection, getDocs, setDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import { Mensaje, savels, getls, removels } from '../widev.js';
+import { Mensaje, savels, getls, removels, nombrejunto } from '../widev.js';
 import { abrirModalProyecto, confirmarModal } from './wimodal.js';
 
 // =============================================
@@ -34,7 +34,8 @@ export const misProyectos = async () => {
 // RENDERIZAR PROYECTOS
 // =============================================
 function renderizarProyectos(proyectos) {
-  $('#grillaProyectos').html(proyectos.map(p => {
+  const ordenados = proyectos.sort((a, b) => (a.orden || 0) - (b.orden || 0)); // ← AGREGAR ESTA LÍNEA
+  $('#grillaProyectos').html(ordenados.map(p => { 
     const pJSON = JSON.stringify(p).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     return `
       <div class="tarjeta-proyecto">
@@ -101,14 +102,14 @@ $(document).on('click', '.boton-editar', function() {
 });
 
 $(document).on('click', '.boton-eliminar', function() {
-  const id = $(this).data('id');
-  confirmarModal({
-    titulo: '¿Eliminar proyecto?',
-    mensaje: '¿Está seguro de eliminar este proyecto? Esta acción no se puede deshacer.',
-    tipo: 'danger',
-    textoConfirmar: 'Eliminar',
-    onConfirmar: () => eliminarProyecto(id, $(this))
-  });
+  const id = String($(this).data('id'));
+    confirmarModal({
+      titulo: '¿Eliminar proyecto?',
+      mensaje: '¿Está seguro de eliminar este proyecto? Esta acción no se puede deshacer.',
+      tipo: 'danger',
+      textoConfirmar: 'Eliminar',
+      onConfirmar: () => eliminarProyecto(id, $(this))
+    });
 });
 
 $(document).on('click', '.boton-actualizar', function() {
@@ -132,7 +133,8 @@ async function guardarProyecto(datos, esEdicion, $btn) {
       linkColaborador: datos.linkColaborador,
       linkAdmin: datos.linkAdmin,
       notas: datos.notas,
-      fechaActualizacion: new Date().toISOString()
+      fechaActualizacion: new Date().toISOString(),
+      
     };
 
     if(esEdicion) {
@@ -144,7 +146,8 @@ async function guardarProyecto(datos, esEdicion, $btn) {
       proyecto.creadoPor = wi.usuario;
       proyecto.creadoEmail = wi.email;
       proyecto.fechaCreacion = new Date().toISOString();
-      await setDoc(doc(db, 'proyectos', `${Date.now()}`), proyecto);
+      proyecto.orden = await obtenerSiguienteOrden(); // ← AGREGAR ESTA LÍNEA
+      await setDoc(doc(db, 'proyectos', `${nombrejunto(datos.nombre)}_${Date.now()}`), proyecto);
       Mensaje('✅ Proyecto creado');
     }
     
@@ -155,6 +158,21 @@ async function guardarProyecto(datos, esEdicion, $btn) {
     Mensaje('❌ Error al guardar proyecto');
   } finally {
     if($btn) spin($btn, false);
+  }
+}
+// =============================================
+// OBTENER SIGUIENTE ORDEN
+// =============================================
+async function obtenerSiguienteOrden() {
+  try {
+    const busq = await getDocs(collection(db, 'proyectos'));
+    if(busq.empty) return 1;
+    
+    const ordenes = busq.docs.map(d => d.data().orden || 0);
+    return Math.max(...ordenes) + 1;
+  } catch(e) {
+    console.error(e);
+    return 1;
   }
 }
 

@@ -75,6 +75,11 @@ export const accederRol = (rol) => {
   window.location.href = new URL(to, window.location.href).toString();
 }; 
 
+export const nombrejunto = (texto) => {
+  return texto.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
+};
+
+
 // RIGHT NOTIFICATIONS WITH X 
 export function Notificacion(mensaje, tipo = 'error', tiempo= 3000) {
   const iconos = {
