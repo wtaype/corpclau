@@ -1,4 +1,5 @@
 import './smile.css';
+import './wiupdate.js'; //Actualizar
 import $ from 'jquery';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { auth, db } from '../firebase/init.js';
@@ -116,6 +117,22 @@ $('.app').html(`
 
 misProyectos(); 
 misNotas();
+
+
+// PARA GUARDAR EL TEMA
+$(document).on('click','.tema',async function(){
+  const miTema = $(this).data('tema');
+  try {
+    await setDoc(doc(db, 'configuracion', userAuth.displayName), {
+      tema: miTema,
+      actualizado: serverTimestamp()
+    }, { merge: true });
+    savels('wiTema', miTema, 72);
+    Mensaje('Tema guardado <i class="fa-solid fa-circle-check"></i>');
+  }catch(e){console.error(e)}
+});
+
+
 
 }
 

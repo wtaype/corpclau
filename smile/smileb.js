@@ -112,13 +112,6 @@ $(document).on('click', '.boton-eliminar', function() {
     });
 });
 
-$(document).on('click', '.boton-actualizar', function() {
-  spin($(this), true);
-  Mensaje('Actualizando datos...');
-  removels('corpProyectos');
-  misProyectos().finally(() => spin($(this), false));
-});
-
 // =============================================
 // GUARDAR PROYECTO
 // =============================================
