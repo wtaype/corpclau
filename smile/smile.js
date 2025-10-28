@@ -6,6 +6,7 @@ import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { collection, doc, getDocs, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, query, where } from 'firebase/firestore';
 import { wiTema, Mensaje, Notificacion, savels, getls, removels, showLoading } from '../widev.js';
 import { misProyectos } from './smileb.js';
+import { misNotas } from './smilen.js';
 
 let wiUsuario = null; //Para guardar usuario
 onAuthStateChanged(auth, async user => {
@@ -56,41 +57,65 @@ $('.app').html(`
   </header>
 
   <div class="contenedor-principal">
-    <!-- ENCABEZADO DE SECCION -->
-    <div class="encabezado-seccion">
-      <h2 class="titulo-seccion">
-        <i class="fa-solid fa-folder-open"></i>
-        Proyectos Activos
-      </h2>
-      <button class="boton-agregar-proyecto" id="botonAgregarProyecto" style="display: none;">
-        <i class="fa-solid fa-plus"></i>
-        Nuevo Proyecto
-      </button>
-    </div>
+<div class="seccion-proyectos">
+<div class="buscador-contenedor">
+<input type="text" class="buscador-input" id="buscadorProyectos" placeholder="Buscar proyectos por nombre...">
+<i class="fa-solid fa-search buscador-icono"></i>
+</div>
+<div class="encabezado-seccion">
+<h2 class="titulo-seccion"><i class="fa-solid fa-folder-open"></i> Proyectos Activos</h2>
+<button class="boton-agregar-proyecto" id="botonAgregarProyecto" style="display:none"><i class="fa-solid fa-plus"></i> Nuevo Proyecto</button>
+</div>
+<div class="grilla-proyectos" id="grillaProyectos">
+<div class="estado-cargando">
+<i class="fa-solid fa-spinner fa-spin"></i>
+<p>Cargando proyectos...</p>
+</div>
+</div>
+</div>
 
-    <!-- GRILLA DE PROYECTOS -->
-    <div class="grilla-proyectos" id="grillaProyectos">
-      <div class="estado-cargando">
-        <i class="fa-solid fa-spinner fa-spin"></i>
-        <p>Cargando proyectos...</p>
-      </div>
-    </div>
-  </div>
+<div class="seccion-notepad">
+<div class="notepad-card">
+<div class="notepad-header">
+<h3 class="notepad-titulo"><i class="fa-solid fa-note-sticky"></i> Notepad General</h3>
+<div class="notepad-acciones">
+<button class="btn-notepad" id="btnVer"><i class="fa-solid fa-eye"></i> Ver</button>
+<button class="btn-notepad" id="btnEditar"><i class="fa-solid fa-pen"></i> Editar</button>
+<button class="btn-notepad" id="btnGuardar" style="display:none"><i class="fa-solid fa-save"></i> Guardar</button>
+</div>
+</div>
+<div class="notepad-toolbar" id="notepadToolbar">
+<button class="toolbar-btn" data-cmd="bold" title="Negrita"><i class="fa-solid fa-bold"></i></button>
+<button class="toolbar-btn" data-cmd="italic" title="Cursiva"><i class="fa-solid fa-italic"></i></button>
+<button class="toolbar-btn" data-cmd="underline" title="Subrayado"><i class="fa-solid fa-underline"></i></button>
+<button class="toolbar-btn" data-cmd="justifyLeft" title="Izquierda"><i class="fa-solid fa-align-left"></i></button>
+<button class="toolbar-btn" data-cmd="justifyCenter" title="Centro"><i class="fa-solid fa-align-center"></i></button>
+<button class="toolbar-btn" data-cmd="justifyRight" title="Derecha"><i class="fa-solid fa-align-right"></i></button>
+<button class="toolbar-btn" data-cmd="createLink" title="Enlace"><i class="fa-solid fa-link"></i></button>
+</div>
+<div class="notepad-content" id="notepadContent" contenteditable="false">
+<p><strong>Bienvenido al Notepad General</strong></p>
+<p>Aquí puedes escribir notas importantes, recordatorios o cualquier información que necesites guardar.</p>
+<p style="text-align:center">🎯 Usa el botón <strong>Editar</strong> para comenzar</p>
+</div>
+</div>
+</div>
+</div>
 
-  <!-- NOTIFICACION TOAST -->
-  <div class="toast" id="toast">
-    <i class="fa-solid fa-circle-check"></i>
-    <span id="mensajeToast">Operación exitosa</span>
-  </div>
+<div class="toast" id="toast">
+<i class="fa-solid fa-circle-check"></i>
+<span id="mensajeToast">Operación exitosa</span>
+</div>
 
-  <footer class="pie-pagina">
-    <p>Creado con <i class="fa-solid fa-heart" style="color: #ff3849;"></i> por 
-    <a class="enlace-pie" href="https://wtaype.github.io/" target="_blank">@wilder.taype</a> 2025 - HClaudia</p>
-  </footer>
+<footer class="pie-pagina">
+<p>Creado con <i class="fa-solid fa-heart" style="color:#ec4899"></i> por 
+<a class="enlace-pie" href="https://wtaype.github.io/" target="_blank">@wilder.taype</a> 2025 - HClaudia</p>
+</footer>
 
 `);
 
 misProyectos(); 
+misNotas();
 
 }
 

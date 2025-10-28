@@ -46,8 +46,8 @@ function renderizarProyectos(proyectos) {
             ${modoEdicion ? `<div class="acciones-proyecto"><button class="boton-accion boton-editar" data-proyecto='${pJSON}' title="Editar"><i class="fa-solid fa-edit"></i></button><button class="boton-accion boton-eliminar" data-id="${p.id}" title="Eliminar"><i class="fa-solid fa-trash"></i></button></div>` : ''}
           </div>
           <div class="enlaces-proyecto">
-            ${p.linkColaborador ? `<a href="${p.linkColaborador}" target="_blank" class="enlace-proyecto"><i class="fa-solid fa-users"></i><span>Colaborador:</span><span class="url-enlace">${p.linkColaborador}</span></a>` : ''}
-            ${p.linkAdmin ? `<a href="${p.linkAdmin}" target="_blank" class="enlace-proyecto"><i class="fa-solid fa-user-shield"></i><span>Administración:</span><span class="url-enlace">${p.linkAdmin}</span></a>` : ''}
+            ${p.linkColaborador ? `<a href="${p.linkColaborador}" target="_blank" class="enlace-proyecto"><i class="fa-solid fa-users"></i><span>Smile:</span><span class="url-enlace">${p.linkColaborador}</span></a>` : ''}
+            ${p.linkAdmin ? `<a href="${p.linkAdmin}" target="_blank" class="enlace-proyecto"><i class="fa-solid fa-user-shield"></i><span>Admin:</span><span class="url-enlace">${p.linkAdmin}</span></a>` : ''}
           </div>
           ${p.notas ? `<div class="etiqueta-notas-proyecto"><i class="fa-solid fa-sticky-note"></i>Notas del Proyecto</div><div class="notas-proyecto">${p.notas.replace(/\n/g, '<br>')}</div>` : ''}
         </div>
@@ -194,3 +194,14 @@ async function eliminarProyecto(id, $btn) {
     if($btn) spin($btn, false);
   }
 }
+
+// =============================================
+// Buscar proyectos 
+// =============================================
+$(document).on('keyup', '#buscadorProyectos', function() {
+  const val = $(this).val().toLowerCase();
+  $('.tarjeta-proyecto').each(function() {
+    const nombre = $(this).find('.nombre-proyecto').text().toLowerCase();
+    $(this).toggle(nombre.includes(val));
+  });
+});
