@@ -36,7 +36,6 @@ $('.conCuenta').click(e => { e.preventDefault(); toggleForms('.upd-form', '.logi
 // =====================================================
 
 let midb = 'smiles';  //Para base de datos 
-let miconf = 'configuracion';  //Para base de datos 
 let wiAuthTm = 3000;  //Tiempo para guardar en firestore
 let wiAuthIn = 'wiAuthIn';  //Para guardar auth en localstorage
 let wiAuthRol = 'wiAuthRol';  //Para guardar auth en localstorage
@@ -153,11 +152,10 @@ $('#Registrar').click(async function(){
       uid: user.uid
     });
     // REGISTRANDO PREFERENCIAS EN DB
-    const wiconsv = doc(db, miconf, usuario);
-    await setDoc(wiconsv,{
-      usuario, email,           
-      tema: temaAsignado, // Corregido: faltaba coma y ahora asigna tema según género
-      actualizacion: serverTimestamp()
+    await setDoc(doc(db, 'preferencias', usuario), {
+      usuario, email,
+      wiTema: temaAsignado,
+      fechaActualizacion: serverTimestamp()
     });
 
     console.log('Registro completo en Firestore <i class="fa-solid fa-circle-check"></i>' + Date());
@@ -170,30 +168,22 @@ $('#Registrar').click(async function(){
 // LOGIN CENTER APP 
 $('#Login').click(async function() {
   showLoading(true);
-
   try {
     const [usuario, password] = ['#email', '#password'].map(id => $(id).val());
-    let email = usuario, busq = null, tema = null;
-    if (!usuario.includes('@')) {
-      busq = await getDoc(doc(db, midb, usuario));
-      if (!busq.exists()) throw new Error('Usuario no encontrado');
-      email = busq.data().email;
-      try { tema = (await getDoc(doc(db, 'configuracion', usuario))).data()?.tema; } catch(e) {}
-    }
+    const esEmail = usuario.includes('@');
+    const busq = !esEmail ? await getDoc(doc(db, midb, usuario)) : null;
+    if (!esEmail && !busq.exists()) throw new Error('Usuario no encontrado');
+    const email = esEmail ? usuario : busq.data().email;
     await signInWithEmailAndPassword(auth, email, password);
-    const rol = busq?.data()?.rol || 'smile';
-    savels(wiAuthIn,'wIn',24); savels(wiAuthRol, rol, 24);  //Para guardar el inicio sesion
-    if (tema) savels('wiTema', tema, 72); //Para guardar el tema 
-    accederRol(rol);
-  }
-  
-  catch(e){
-    const errores = {
-      'auth/invalid-credential': 'Contraseña incorrecta',
-      'auth/invalid-email': 'Falta registrar Email',
-      'auth/missing-email': 'Email o usuario no registrado'
-    }; Mensaje(errores[e.code] || e.message, 'error'); console.error(e);   
-  }finally{showLoading(false)}
+    
+    const tema = !esEmail && (await getDoc(doc(db, 'preferencias', usuario)))?.data?.()?.wiTema || null;//Temas 
+    const rol = busq?.data()?.rol || 'smile'; accederRol(rol); //Acceder rol 
+
+    savels(wiAuthIn,'wIn',24); savels(wiAuthRol, rol, 24); if(tema) savels('wiTema', tema, 72); //Cache para optimizar
+  } catch(e) {
+    const err = {'auth/invalid-credential':'Contraseña incorrecta','auth/invalid-email':'Falta registrar Email','auth/missing-email':'Email o usuario no registrado'};
+    Mensaje(err[e.code] || e.message, 'error'); console.error(e);
+  } finally { showLoading(false); }
 });
 
 // RECUPERAR CENTER APP 

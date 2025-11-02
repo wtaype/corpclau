@@ -9,6 +9,8 @@ import { wiTema, Mensaje, Notificacion, savels, getls, removels, showLoading } f
 import { misProyectos } from './smileb.js';
 import { misNotas } from './smilen.js';
 
+
+// 🔐 AUTENTICACIÓN
 let wiUsuario = null; //Para guardar usuario
 onAuthStateChanged(auth, async user => {
   if(!user) return window.location.href = '/'; // Seguridad default 
@@ -16,13 +18,13 @@ onAuthStateChanged(auth, async user => {
 
   try{
     const wi = getls('wiSmile');
-    if(wi) return smileContenido(wi); // Primero Cache  
+    if(wi) return smileContenido(wi), wiTema(db, wiUsuario);//Cache Primero con Contenido + temas Cache
 
     const busq = await getDocs(query(collection(db, 'smiles'), where('usuario', '==', user.displayName)));
-    const widt = busq.docs[0].data(); savels('wiSmile', widt, 450); smileContenido(widt); // Luego Firestore  
+    const widt = busq.docs[0].data(); savels('wiSmile', widt, 450); 
+    smileContenido(widt); wiTema(db, wiUsuario); //Contenido + temas Online
   }catch(e){console.error(e)}
 });
-
 
 function smileContenido(wi){
     console.log(wi.nombre); 
@@ -118,19 +120,6 @@ $('.app').html(`
 misProyectos(); 
 misNotas();
 
-
-// PARA GUARDAR EL TEMA
-$(document).on('click','.tema',async function(){
-  const miTema = $(this).data('tema');
-  try {
-    await setDoc(doc(db, 'configuracion', userAuth.displayName), {
-      tema: miTema,
-      actualizado: serverTimestamp()
-    }, { merge: true });
-    savels('wiTema', miTema, 72);
-    Mensaje('Tema guardado <i class="fa-solid fa-circle-check"></i>');
-  }catch(e){console.error(e)}
-});
 
 
 
