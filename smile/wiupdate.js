@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import { Mensaje, removels } from '../widev.js';
-import { misProyectos } from './smileb.js';
-import { misNotas } from './smilen.js';
+import { Mensaje, removels } from './widev.js';
+import { misProyectos } from './smilebd.js';
+import { misNotas } from './smilenotas.js';
 
 // =============================================
 // SPIN HELPER

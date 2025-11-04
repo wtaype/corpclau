@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { auth, db } from './firebase/init.js'; // Importa la configuración de Firebase desde tu archivo de inicialización
+import { auth, db } from '../firebase/init.js'; // Importa la configuración de Firebase desde tu archivo de inicialización
 import { getFirestore, setDoc, getDoc, deleteDoc, onSnapshot, doc, collection, getDocs, serverTimestamp, query, where, orderBy, limit } from "firebase/firestore";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
 import { Capi, Mensaje, Notificacion, savels, getls, removels, accederRol, showLoading, witip, fechaLocal, calcularEdad } from './widev.js'; //Tools geniales 

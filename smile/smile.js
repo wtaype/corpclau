@@ -5,9 +5,9 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import { auth, db } from '../firebase/init.js';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { collection, doc, getDocs, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, query, where } from 'firebase/firestore';
-import { wiTema, Mensaje, Notificacion, savels, getls, removels, showLoading } from '../widev.js';
-import { misProyectos } from './smileb.js';
-import { misNotas } from './smilen.js';
+import { wiTema, Mensaje, Notificacion, savels, getls, removels, showLoading } from './widev.js';
+import { misProyectos } from './smilebd.js';
+import { misNotas } from './smilenotas.js';
 
 
 // 🔐 AUTENTICACIÓN

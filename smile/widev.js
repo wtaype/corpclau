@@ -4,17 +4,14 @@ import { doc, setDoc, getDoc, serverTimestamp} from 'firebase/firestore';
 export const wiTema = (() => {
   const tonos = [["Cielo","#0EBEFF"],["Dulce","#FF5C69"],["Paz","#29C72E"],["Mora","#7000FF"],["Futuro","#21273B"]];
   let espera, temaSel;
-
   const aplica = el => {
     const dato = $(el).data('tema');
     if (!dato) return false;
     const [nomb, color] = dato.split('|');
     if (!nomb || !color) return false;
-    $('html').attr('data-theme', nomb);
-    const meta = $('meta[name="theme-color"]');
+    $('html').attr('data-theme', nomb); const meta = $('meta[name="theme-color"]');
     meta.length ? meta.attr('content', color) : $('<meta>', { name: 'theme-color', content: color }).appendTo('head');
-    savels('wiTema', dato, 720); $('.mtha').removeClass('mtha'); $(el).addClass('mtha'); temaSel = dato;
-    return true;
+    savels('wiTema', dato, 720); $('.mtha').removeClass('mtha'); $(el).addClass('mtha'); temaSel = dato; return true;
   };
   const guarda = async (db, usr) => {
     if (!db || !usr?.displayName || !temaSel) return;
@@ -23,8 +20,7 @@ export const wiTema = (() => {
         usuario: usr.displayName, email: usr.email,
         wiTema: temaSel, fechaActualizacion: serverTimestamp()
       }, { merge: true });
-      const [nomb] = temaSel.split('|');
-      Mensaje(`Tema ${nomb} guardado 🎨`);
+      const [nomb] = temaSel.split('|'); Mensaje(`Tema ${nomb} guardado 🎨`);
     } catch (err) {console.error('❌ Error guardando tema:', err);}
   };
   return (db, usr) => {
@@ -33,13 +29,11 @@ export const wiTema = (() => {
     const inicio = $(`[data-tema="${guardado}"]`)[0] || $('.mtha')[0] || $('[data-tema]').first()[0];
     inicio && aplica(inicio);
     $(document).off('click.witema').on('click.witema', '[data-tema]', e => {
-      if (!aplica(e.currentTarget) || !db || !usr?.displayName) return;
-      clearTimeout(espera);
+      if (!aplica(e.currentTarget) || !db || !usr?.displayName) return; clearTimeout(espera);
       espera = setTimeout(() => guarda(db, usr), 50); //Para guardar el tema segundos
     });
   };
 })();
-
 
 // ==============================
 // SISTEMA DE ACTUALIZACION DE CLASES

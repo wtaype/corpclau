@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { auth, db } from './firebase/init.js';
+import { auth, db } from '../firebase/init.js';
 
 // Auth imports
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, 

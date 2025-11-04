@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { db } from '../firebase/init.js';
 import { collection, getDocs, setDoc, doc } from 'firebase/firestore';
-import { Mensaje, savels, getls, removels, nombrejunto } from '../widev.js';
+import { Mensaje, savels, getls, removels, nombrejunto } from './widev.js';
 
 // =============================================
 // CARGAR Y MOSTRAR NOTAS
